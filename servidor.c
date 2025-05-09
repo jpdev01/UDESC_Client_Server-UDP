@@ -29,7 +29,15 @@ int main() {
         exit(0);
     }
 
-    printf("Servidor UDP iniciado\n");
+    struct sockaddr_in local_addr;
+        socklen_t addr_len = sizeof(local_addr);
+        getsockname(sock, (struct sockaddr *)&local_addr, &addr_len);
+        char server_ip[INET_ADDRSTRLEN];
+        printf("Server IP: %s\n", inet_ntop(AF_INET, &(local_addr.sin_addr), server_ip, INET_ADDRSTRLEN));
+        printf("Server Port: %d\n", ntohs(local_addr.sin_port));
+
+        printf("Servidor UDP iniciado\n");
+
 
     for (;;) {
         bzero(palavra, sizeof(palavra));

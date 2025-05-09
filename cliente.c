@@ -14,7 +14,16 @@
 
 int main() {
     struct sockaddr_in target;
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);  // Alterado para UDP
+
+    // cria o socket UDP
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+
+    // NOVO: imprimir IP e porta fornecidos pelo SO
+    struct sockaddr_in local_addr;
+    socklen_t addr_len = sizeof(local_addr);
+    getsockname(sock, (struct sockaddr *)&local_addr, &addr_len);
+    printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
+    printf("Client Port: %d\n", ntohs(local_addr.sin_port));
 
     char palavra[10];
     socklen_t ad1 = sizeof(target);
