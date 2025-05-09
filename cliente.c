@@ -18,9 +18,17 @@ int main() {
     // cria o socket UDP
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
 
-    // NOVO: imprimir IP e porta fornecidos pelo SO
     struct sockaddr_in local_addr;
     socklen_t addr_len = sizeof(local_addr);
+    bzero(&local_addr, sizeof(local_addr));
+    local_addr.sin_family = AF_INET;
+    local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    local_addr.sin_port = 0;  // Deixe o sistema escolher a porta
+
+    // Bind para associar o socket a uma porta fornecida pelo SO
+    bind(sock, (struct sockaddr *)&local_addr, sizeof(local_addr));
+
+    // NOVO: imprimir IP e porta fornecidos pelo SO
     getsockname(sock, (struct sockaddr *)&local_addr, &addr_len);
     printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
     printf("Client Port: %d\n", ntohs(local_addr.sin_port));
