@@ -1,4 +1,4 @@
-// Bibliotecas necessárias
+// Bibliotecas necessÃ¡rias
 
 #include <stdio.h>
 #include <string.h>
@@ -12,67 +12,43 @@
 #include <unistd.h>
 #include <time.h>
 
-
 int main() {
+    struct sockaddr_in target;
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);  // Alterado para UDP
 
-        // definição das estruturas do cliente e do servidor
- 	struct sockaddr_in target;
-      
-        // criação dos sockets.o sock é declarado identicamente ao cliente
-	int sock = socket(AF_INET, SOCK_STREAM, 0);
+    char palavra[10];
+    socklen_t ad1 = sizeof(target);
+    int tam, i = 0;
 
-	// declaração das variáveis
+    bzero((char *)&target, ad1);
+    target.sin_family = AF_INET;
+    target.sin_addr.s_addr = inet_addr("127.0.0.1");
+    target.sin_port = htons(9000);
 
-        char palavra[10];
-	int ad1 = sizeof(target);
-        int tam, i = 0;
- 
-	// inicializa a estrutura do cliente
-        bzero((char *)&target, ad1);
-        
-        // indica a família do protocolo
-	target.sin_family = AF_INET;
+    printf("\nDigite 1 (uma) palavra em minÃºsculo (sem espaÃ§os):");
 
-        // especifica o endereço (IP) do servidor
-	target.sin_addr.s_addr = inet_addr("127.0.0.1");
+    do {
+        if (fgets(palavra, sizeof(palavra), stdin) != NULL) {
+            // Remove newline do fgets
+            palavra[strcspn(palavra, "\n")] = '\0';
+        }
 
-        // porta que o programa vai usar
-	target.sin_port = htons(9000);
- 
-        // efectua a ligação ao servidor. Se falhar (por exemplo o servidor estar em baixo) o programa termina
-	if(connect(sock, (struct sockaddr *)&target, ad1) == -1)
-	{
-		close(sock);
-		puts("Conexao falhada!");
-		exit(0);
-	}
-             printf("\n Digite 1 (uma) palavra em minisculo (sem espacos):");
-	     do {
+        // Envia para o servidor
+        sendto(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, ad1);
 
-		 if (fgets(palavra, sizeof(palavra), stdin) != NULL) {
-                     printf("Servidor converteu para:"); // 
-                     
-                 }
+        if (strcmp(palavra, "exit") != 0) {
+            // Recebe resposta do servidor
+            recvfrom(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, &ad1);
+            printf("Servidor converteu para: %s\n", palavra);
 
-                // envia para o servidor os dados contidos na variável palavra
-		write(sock, palavra, sizeof(palavra));
-                	if(strcmp(palavra, "exit") != 0){
-                        
-		          read(sock, palavra, sizeof(palavra));
-		          puts(palavra);
-                          fflush(stdin);
+            printf("\nDigite 'exit' para sair: ");
+            scanf("%s", palavra);
+            getchar(); // limpar o \n do buffer
+        }
 
-                          printf("\n Digite 'exit' para sair:");
-                          scanf("%s", palavra);
+    } while (strcmp(palavra, "exit") != 0);
 
-                        }
-
-              
-	   }while(strcmp(palavra, "exit") != 0 );
-                
-         // Fecha o socket
-         printf("closing socket \n");
-	close(sock);
-	return 0;
-    
+    printf("closing socket \n");
+    close(sock);
+    return 0;
 }
