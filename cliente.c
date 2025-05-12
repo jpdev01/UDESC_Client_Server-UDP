@@ -1,3 +1,5 @@
+// Bibliotecas necessárias
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -6,6 +8,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <time.h>
 
@@ -33,6 +36,7 @@ int main() {
 
     printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
     printf("Client Port: %d\n", ntohs(local_addr.sin_port));
+
 
     printf("\nDigite 1 (uma) palavra em minúsculo (sem espaços):");
 
