@@ -12,7 +12,7 @@
 int main() {
 
     struct sockaddr_in me, from;
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);  // UDP
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);  //cria socket UDP (datagrama)
 
     int tam, tam2 = 0, i = 0;
     socklen_t ad1 = sizeof(from);
@@ -21,7 +21,7 @@ int main() {
     bzero((char *)&me, sizeof(me));
     me.sin_family = AF_INET;
     me.sin_addr.s_addr = htonl(INADDR_ANY);
-    me.sin_port = htons(9000);
+    me.sin_port = htons(9000); // porta do socket
 
     if (bind(sock, (struct sockaddr *)&me, sizeof(me)) == -1) {
         close(sock);
@@ -46,6 +46,9 @@ int main() {
         recvfrom(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&from, &ad1);
 
         if (strcmp(palavra, "exit") != 0) {
+             // Imprime o IP e a porta do cliente
+                    printf("Recebido de %s:%d -> %s\n",
+                           inet_ntoa(from.sin_addr), ntohs(from.sin_port), palavra);
             tam = strlen(palavra);
             for (i = 0; i < tam; i++) {
                 if ((palavra[i] >= 'a') && (palavra[i] <= 'z')) {
@@ -53,6 +56,8 @@ int main() {
                 }
             }
             tam2 = strlen(palavra);
+
+            printf("palavra retornada: %s\n", palavra);
 
             // Envia de volta para o cliente
             sendto(sock, palavra, tam2, 0, (struct sockaddr *)&from, ad1);

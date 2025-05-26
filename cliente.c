@@ -28,6 +28,7 @@ int main() {
     target.sin_port = htons(9000);
 
     // Faz um connect apenas para descobrir IP e porta usados
+    // A chamada connect() informa ao sistema operacional que você quer se conectar a esse destino, mas não establece uma conexão.
     connect(sock, (struct sockaddr *)&target, sizeof(target));
 
     struct sockaddr_in local_addr;

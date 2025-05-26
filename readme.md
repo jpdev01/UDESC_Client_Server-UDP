@@ -22,6 +22,22 @@ Alterações no servidor:
 
 Alterações no cliente:
 1. Substituído SOCK_STREAM por SOCK_DGRAM.
-2. Removida a chamada connect(), pois UDP é sem conexão.
+2. Removida a chamada connect(), pois UDP é sem conexão. -> UDP não exige nem permite a criação de uma "conexão" com o cliente —
+cada mensagem pode vir de um cliente diferente, e o servidor não mantém uma ligação persistente com nenhum deles.
 3. Substituídas as chamadas write() e read() por sendto() e recvfrom().
 4. Lógica original mantida sempre que possível para facilitar leitura e manutenção.
+
+Iimprimir IP e porta do cliente atribuídos dinamicamente:
+1. Removido o uso de bind() manual com INADDR_ANY e porta 0. 
+2. Adicionado o uso de connect() com o endereço do servidor UDP,
+3. permitindo que o sistema operacional defina o IP e porta de origem.
+- Utilizado getsockname() após o connect() para capturar o IP e porta efetivamente utilizados na comunicação.
+- Impressão do IP e porta do cliente logo após a criação do socket.
+
+| Aspecto                        | Código Original (TCP)                                  | Código Novo (UDP)                      |
+| ------------------------------ | ------------------------------------------------------ | -------------------------------------- |
+| **Tipo de socket**             | `SOCK_STREAM` (TCP)                                    | `SOCK_DGRAM` (UDP)                     |
+| **Funções de conexão**         | `listen()`, `accept()`, `read()` e `write()`           | `recvfrom()` e `sendto()`              |
+| **Gerenciamento de conexão**   | Criação de um **novo socket** por cliente (`accept()`) | Não há conexão: comunicação sem estado |
+| **Fechamento de sockets**      | `close(newSock); close(sock);`                         | Apenas `close(sock);`                  |
+| **Uso de endereço do cliente** | `accept()` preenche `from`                             | `recvfrom()` preenche `from`           |
