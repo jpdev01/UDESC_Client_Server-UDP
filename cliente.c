@@ -18,6 +18,15 @@ int main() {
     // cria o socket UDP
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
 
+        // Novo trecho adicionado
+        struct sockaddr_in local;
+        bzero((char *)&local, sizeof(local));
+        local.sin_family = AF_INET;
+        local.sin_addr.s_addr = htonl(INADDR_ANY);
+        local.sin_port = htons(0); // Porta 0 deixa o SO escolher uma
+
+        bind(sock, (struct sockaddr *)&local, sizeof(local)); // <- necessário para aparecer no netstat
+
     char palavra[10];
     socklen_t ad1 = sizeof(target);
     int tam, i = 0;
@@ -29,14 +38,10 @@ int main() {
 
     // Faz um connect apenas para descobrir IP e porta usados
     // A chamada connect() informa ao sistema operacional que você quer se conectar a esse destino, mas não establece uma conexão.
-    connect(sock, (struct sockaddr *)&target, sizeof(target));
 
     struct sockaddr_in local_addr;
     socklen_t addr_len = sizeof(local_addr);
     getsockname(sock, (struct sockaddr *)&local_addr, &addr_len);
-
-    printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
-    printf("Client Port: %d\n", ntohs(local_addr.sin_port));
 
 
     printf("\nDigite 1 (uma) palavra em minúsculo (sem espaços):");
@@ -49,6 +54,8 @@ int main() {
 
         // Envia para o servidor
         sendto(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, ad1);
+         printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
+         printf("Client Port: %d\n", ntohs(local_addr.sin_port));
 
         if (strcmp(palavra, "exit") != 0) {
             // Recebe resposta do servidor
