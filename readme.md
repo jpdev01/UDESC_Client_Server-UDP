@@ -1,3 +1,13 @@
+1. Aplique o IP do servidor, no arquivo `cliente.c`, na linha onde é definido o endereço do servidor (linha 34),
+antes:
+```c
+target.sin_addr.s_addr = inet_addr("127.0.0.1");
+```
+depois:
+```c
+target.sin_addr.s_addr = inet_addr("SEU_IP_AQUI");
+```
+
 Subir Servidor:
 ```bash
 gcc -o server Servidor.c
