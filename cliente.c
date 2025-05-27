@@ -42,30 +42,28 @@ int main() {
     socklen_t addr_len = sizeof(local_addr);
     getsockname(sock, (struct sockaddr *)&local_addr, &addr_len);
 
-
-    printf("\nDigite 1 (uma) palavra em minúsculo (sem espaços):");
-
     do {
+        printf("\nDigite 1 (uma) palavra em minúsculo (sem espaços):");
+
         if (fgets(palavra, sizeof(palavra), stdin) != NULL) {
             // Remove newline do fgets
             palavra[strcspn(palavra, "\n")] = '\0';
         }
 
-        // Envia para o servidor
-        sendto(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, ad1);
-         printf("Client IP: %s\n", inet_ntoa(local_addr.sin_addr));
-         printf("Client Port: %d\n", ntohs(local_addr.sin_port));
+        if (palavra != "exit") {
+            // Envia para o servidor
+            sendto(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, ad1);
+            printf("Client Port: %d\n", ntohs(local_addr.sin_port));
 
-        if (strcmp(palavra, "exit") != 0) {
-            // Recebe resposta do servidor
-            recvfrom(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, &ad1);
-            printf("Servidor converteu para: %s\n", palavra);
+            if (strcmp(palavra, "exit") != 0) {
+                // Recebe resposta do servidor
+                recvfrom(sock, palavra, sizeof(palavra), 0, (struct sockaddr *)&target, &ad1);
+                printf("Servidor converteu para: %s\n", palavra);
 
-            printf("\nDigite 'exit' para sair: ");
-            scanf("%s", palavra);
-            getchar(); // limpar o \n do buffer
+                printf("\n--------------------\n");
+                printf("\nDigite 'exit' para sair: ");
+            }
         }
-
     } while (strcmp(palavra, "exit") != 0);
 
     printf("closing socket \n");
