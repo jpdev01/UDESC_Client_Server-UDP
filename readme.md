@@ -33,11 +33,3 @@ Iimprimir IP e porta do cliente atribuídos dinamicamente:
 3. permitindo que o sistema operacional defina o IP e porta de origem.
 - Utilizado getsockname() após o connect() para capturar o IP e porta efetivamente utilizados na comunicação.
 - Impressão do IP e porta do cliente logo após a criação do socket.
-
-| Aspecto                        | Código Original (TCP)                                  | Código Novo (UDP)                      |
-| ------------------------------ | ------------------------------------------------------ | -------------------------------------- |
-| **Tipo de socket**             | `SOCK_STREAM` (TCP)                                    | `SOCK_DGRAM` (UDP)                     |
-| **Funções de conexão**         | `listen()`, `accept()`, `read()` e `write()`           | `recvfrom()` e `sendto()`              |
-| **Gerenciamento de conexão**   | Criação de um **novo socket** por cliente (`accept()`) | Não há conexão: comunicação sem estado |
-| **Fechamento de sockets**      | `close(newSock); close(sock);`                         | Apenas `close(sock);`                  |
-| **Uso de endereço do cliente** | `accept()` preenche `from`                             | `recvfrom()` preenche `from`           |
