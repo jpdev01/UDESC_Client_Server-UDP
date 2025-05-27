@@ -18,14 +18,14 @@ int main() {
     // cria o socket UDP
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
 
-        // Novo trecho adicionado
-        struct sockaddr_in local;
-        bzero((char *)&local, sizeof(local));
-        local.sin_family = AF_INET;
-        local.sin_addr.s_addr = htonl(INADDR_ANY);
-        local.sin_port = htons(0); // Porta 0 deixa o SO escolher uma
+    // Novo trecho adicionado
+    struct sockaddr_in local;
+    bzero((char *)&local, sizeof(local));
+    local.sin_family = AF_INET;
+    local.sin_addr.s_addr = htonl(INADDR_ANY);
+    local.sin_port = htons(0); // Porta 0 deixa o SO escolher uma
 
-        bind(sock, (struct sockaddr *)&local, sizeof(local)); // <- necessário para aparecer no netstat
+    bind(sock, (struct sockaddr *)&local, sizeof(local)); // <- necessário para aparecer no netstat
 
     char palavra[10];
     socklen_t ad1 = sizeof(target);
@@ -38,6 +38,7 @@ int main() {
 
     // Faz um connect apenas para descobrir IP e porta usados
     // A chamada connect() informa ao sistema operacional que você quer se conectar a esse destino, mas não establece uma conexão.
+    // connect(sock, (struct sockaddr *)&target, sizeof(target)); // o problema esta aqui
 
     struct sockaddr_in local_addr;
     socklen_t addr_len = sizeof(local_addr);
