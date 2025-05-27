@@ -5,7 +5,7 @@ target.sin_addr.s_addr = inet_addr("127.0.0.1");
 ```
 depois:
 ```c
-target.sin_addr.s_addr = inet_addr("SEU_IP_AQUI");
+target.sin_addr.s_addr = inet_addr("SEU_IP_DO_SERVIDOR");
 ```
 
 Subir Servidor:
